@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="6dp">
+
+    <Spinner
+        android:id="@+id/spinnerValues"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.35"/>
+
+    <TextView
+        android:id="@+id/batch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.15"/>
+
+    <TextView
+        android:id="@+id/quantity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.15"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnMinus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_weight="0.15"
+        android:backgroundTint="@color/red"
+        android:text="-" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPlus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:text="+"
+        android:backgroundTint="@color/blue"/>
+
+</LinearLayout>
