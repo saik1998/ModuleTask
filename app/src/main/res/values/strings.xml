@@ -2,4 +2,9 @@
     <string name="app_name">ModuleTask</string>
     <string name="minus">-</string>
     <string name="plus">+</string>
+
+
+    <string name="scanning_for_devices">Scanning for devices…</string>
+    <string name="no_devices_found">No devices found. Try scanning again.</string>
+    <string name="devices_found">Found %d device(s). Tap to connect.</string>
 </resources>
