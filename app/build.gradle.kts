@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "com.example.moduletask"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.moduletask"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -40,4 +40,11 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation ("com.google.android.material:material:1.11.0")
+    implementation ("com.github.yuriy-budiyev:code-scanner:2.3.0")
+    implementation ("com.google.mlkit:barcode-scanning:17.3.0")
+    implementation ("com.google.zxing:core:3.3.3")
+    implementation ("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation ("com.google.code.gson:gson:2.10.1")
 }
