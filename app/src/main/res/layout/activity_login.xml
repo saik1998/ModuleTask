@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@drawable/farm_bg">
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/logo"
+        android:scaleType="fitCenter"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="40dp"/>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="130dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textSize="16dp"
+            android:textStyle="normal"
+            android:layout_marginStart="13dp"/>
+
+        <EditText
+            android:id="@+id/edtUsername"
+            android:layout_width="350dp"
+            android:layout_height="55dp"
+            android:text="barcode"
+            android:layout_marginTop="8dp"
+            android:padding="15dp"
+            android:background="#FFFFFF"
+            android:elevation="10dp"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textSize="16dp"
+            android:textStyle="normal"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="13dp"/>
+
+        <EditText
+            android:id="@+id/edtPassword"
+            android:layout_width="350dp"
+            android:layout_height="55dp"
+            android:text="password"
+            android:inputType="textPassword"
+            android:textColor="#000000"
+            android:layout_marginTop="15dp"
+            android:padding="15dp"
+            android:background="#FFFFFF"
+            android:elevation="10dp"
+            android:layout_marginStart="10dp"/>
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:text="LOG IN"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="77dp"
+            android:backgroundTint="#1B5E20"/>
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
