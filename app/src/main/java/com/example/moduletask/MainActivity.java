@@ -18,12 +18,15 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class MainActivity extends AppCompatActivity {
 
     CardView cardView;
+    ImageView imageProfile;
+    DrawerLayout drawerLayout;
     private static final int CAMERA_REQUEST_CODE = 101;
 
 
@@ -34,6 +37,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         cardView = findViewById(R.id.cardView);
+        imageProfile = findViewById(R.id.imgProfile);
+        drawerLayout = findViewById(R.id.drawerLayout);
+
+        imageProfile.setOnClickListener(v -> {
+
+            drawerLayout.openDrawer(
+                    androidx.core.view.GravityCompat.START
+            );
+
+        });
 
         cardView.setOnClickListener(view -> {
             openBottomDialog();
@@ -54,11 +67,13 @@ public class MainActivity extends AppCompatActivity {
         ImageView btnScan = view.findViewById(R.id.btnScan);
         ImageView btnSearch = view.findViewById(R.id.btnSearch);
         btnScan.setOnClickListener(v ->{
+            dialog.dismiss();
             checkCameraPermission();
         });
 
 
         btnSearch.setOnClickListener(view1 -> {
+            dialog.dismiss();
             Intent intent = new Intent(this,SearchActivity.class);
             startActivity(intent);
         });

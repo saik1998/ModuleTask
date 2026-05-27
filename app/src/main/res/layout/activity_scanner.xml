@@ -9,6 +9,34 @@
     android:orientation="vertical"
     tools:context=".ScannerActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:background="@drawable/header_bg2">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/back_icon"
+           android:layout_gravity="center"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Scan QR code"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_centerInParent="true"/>
+
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/scannerFrameLayOut"
         android:layout_width="match_parent"
@@ -32,7 +60,29 @@
             app:frameVerticalBias="0.5"
             app:maskColor="#77000000" />
 
+        <LinearLayout
+            android:id="@+id/progressBarLL"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:background="#99000000"
+            android:gravity="center">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+
+
 
     </FrameLayout>
+
+
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.moduletask;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -7,6 +8,10 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -30,12 +35,19 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import android.app.Dialog;
 
 public class ScannerActivity extends AppCompatActivity {
 
     private CodeScanner mCodeScanner;
     CodeScannerView scannerView;
+    ImageView btnBack;
+    private boolean isScanned = false;
+    private Dialog loadingDialog;
+    private ProgressBar progressBar;
+    private LinearLayout linearLayout;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +55,29 @@ public class ScannerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scanner);
 
         scannerView = findViewById(R.id.scanner_view);
+        btnBack = findViewById(R.id.btnBack);
+        progressBar = findViewById(R.id.progressBar);
+        linearLayout = findViewById(R.id.progressBarLL);
 
         openCameraScan();
+        btnBack.setOnClickListener(v -> {
+
+            finish();
+
+        });
+        /*loadingDialog = new Dialog(this);
+
+        loadingDialog.setContentView(
+                R.layout.loading_dialog
+        );
+
+        loadingDialog.getWindow()
+                .setBackgroundDrawableResource(
+                        android.R.color.transparent
+                );
+
+        loadingDialog.setCancelable(false);*/
+
 
     }
 
@@ -52,10 +85,22 @@ public class ScannerActivity extends AppCompatActivity {
         try {
             mCodeScanner = new CodeScanner(this, scannerView);
             mCodeScanner.setDecodeCallback(result -> {
+
                 runOnUiThread(() -> {
+
+                    if(isScanned) {
+                        return;
+                    }
+
+                    isScanned = true;
+
                     mCodeScanner.stopPreview();
-                   CallApi(result.getText());
+                    scannerView.setEnabled(false);
+
+                    CallApi(result.getText());
+
                 });
+
             });
             scannerView.setOnClickListener(view -> mCodeScanner.startPreview());
 
@@ -67,12 +112,32 @@ public class ScannerActivity extends AppCompatActivity {
 
     private void CallApi(String text) {
 
-        if (text == null || text.isEmpty()) return;
+        if (text == null || text.isEmpty()) {
+
+            Toast.makeText(
+                    this,
+                    "Invalid Barcode",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            isScanned = false;
+
+            mCodeScanner.startPreview();
+
+            return;
+        }
 
         if (!isNetworkConnection(this)) {
             Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
+            isScanned = false;
+
+            mCodeScanner.startPreview();
             return;
         }
+
+        linearLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+
 
         OkHttpClient client = new OkHttpClient();
 
@@ -91,30 +156,103 @@ public class ScannerActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() ->
-                        Toast.makeText(ScannerActivity.this, "API Failed", Toast.LENGTH_SHORT).show()
-                );
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responseData = response.body().string();
 
                 runOnUiThread(() -> {
-                    if (response.isSuccessful()) {
+
+                    linearLayout.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+
+                    isScanned = false;
+
+                    mCodeScanner.startPreview();
+
+                    Toast.makeText(
+                            ScannerActivity.this,
+                            "Network Error",
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                });
+
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String responseData;
+
+                if(response.body() != null){
+                    responseData = response.body().string();
+                } else {
+                    responseData = "";
+                }
+
+                runOnUiThread(() -> {
+                    if (response.isSuccessful()
+                            && !responseData.isEmpty()) {
                         Log.d("API_RESPONSE", responseData);
                         Toast.makeText(ScannerActivity.this, "Success", Toast.LENGTH_SHORT).show();
 
                         Gson gson = new Gson();
 
-                        BarcodeModel model = gson.fromJson(responseData, BarcodeModel.class);
+                        BarcodeModel model =
+                                gson.fromJson(responseData, BarcodeModel.class);
 
-                        ArrayList<TrackerResModel> list = model.getBarcode_data();
+                        if(model == null){
+
+                            linearLayout.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
+
+                            isScanned = false;
+
+                            mCodeScanner.startPreview();
+
+                            Toast.makeText(
+                                    ScannerActivity.this,
+                                    "Invalid Response",
+                                    Toast.LENGTH_LONG
+                            ).show();
+
+                            return;
+                        }
+
+                        ArrayList<TrackerResModel> list =
+                                model.getBarcode_data();
+                        if(list == null || list.isEmpty()) {
+
+                            linearLayout.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
+
+                            Toast.makeText(
+                                    ScannerActivity.this,
+                                    "No Data Found",
+                                    Toast.LENGTH_LONG
+                            ).show();
+
+                            isScanned = false;
+
+                            mCodeScanner.startPreview();
+
+                            return;
+                        }
+//                        loadingDialog.dismiss();
+
+                        linearLayout.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
 
                         openDetailsScreen(list);
 
                     } else {
-                        Toast.makeText(ScannerActivity.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(
+                                ScannerActivity.this,
+                                responseData.toString(),Toast.LENGTH_SHORT).show();
+                        linearLayout.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+
+                        isScanned = false;
+
+                        mCodeScanner.startPreview();
+
+                       
                     }
                 });
             }
@@ -138,17 +276,36 @@ public class ScannerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mCodeScanner.startPreview();
+        if(mCodeScanner != null) {
+            try{
+                mCodeScanner.startPreview();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     protected void onPause() {
+
+        if(mCodeScanner != null) {
+            mCodeScanner.releaseResources();
+        }
         super.onPause();
-        mCodeScanner.releaseResources();
+
     }
     private void openDetailsScreen(ArrayList<TrackerResModel> list) {
-        Intent intent = new Intent(ScannerActivity.this, DetailsActivity.class);
+        Intent intent =
+                new Intent(
+                        ScannerActivity.this,
+                        DetailsActivity.class);
         intent.putExtra("data", list);
+        intent.putExtra("source", "scanner");
+
+
         startActivity(intent);
+        finish();
+
     }
+
 }

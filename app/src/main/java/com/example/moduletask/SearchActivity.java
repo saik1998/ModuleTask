@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -29,11 +30,18 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import android.app.Dialog;
+import android.app.Dialog;
+import android.widget.EditText;
+import android.widget.Button;
 
 public class SearchActivity extends AppCompatActivity {
+    private Dialog loadingDialog;
 
     EditText searchTxt;
     Button searchBtn;
+    ImageView btnBack;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -44,13 +52,40 @@ public class SearchActivity extends AppCompatActivity {
 
         searchTxt = findViewById(R.id.barCode);
         searchBtn = findViewById(R.id.search);
+        btnBack = findViewById(R.id.btnBack);
 
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CallApi(searchTxt.getText().toString().trim());
+
+                loadingDialog.show();
+
+                CallApi(
+                        searchTxt.getText()
+                                .toString()
+                                .trim()
+                );
             }
         });
+        btnBack.setOnClickListener(v -> {
+
+            finish();
+
+        });
+        loadingDialog = new Dialog(this);
+
+        loadingDialog.setContentView(
+                R.layout.loading_dialog
+        );
+
+        loadingDialog.getWindow()
+                .setBackgroundDrawableResource(
+                        android.R.color.transparent
+                );
+
+        loadingDialog.setCancelable(false);
+        loadingDialog.setCanceledOnTouchOutside(false);
+
 
 
 
@@ -79,34 +114,74 @@ public class SearchActivity extends AppCompatActivity {
                 .addHeader("Authorization", "Basic cmVzdDpzZWVkc0BhZG1pbg==")
                 .build();
 
+
         client.newCall(request).enqueue(new Callback() {
+
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() ->
-                        Toast.makeText(SearchActivity.this, "API Failed", Toast.LENGTH_SHORT).show()
-                );
+                runOnUiThread(() -> {
+
+                    loadingDialog.dismiss();
+
+                    Toast.makeText(
+                            SearchActivity.this,
+                            "API Failed",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String responseData = response.body().string();
+                final String responseData;
+
+                if(response.body() != null){
+                    responseData = response.body().string();
+                }else{
+                    responseData = "";
+                }
 
                 runOnUiThread(() -> {
+                    loadingDialog.dismiss();
                     if (response.isSuccessful()) {
                         Log.d("API_RESPONSE", responseData);
                         Toast.makeText(SearchActivity.this, "Success", Toast.LENGTH_SHORT).show();
 
                         Gson gson = new Gson();
 
-                        BarcodeModel model = gson.fromJson(responseData, BarcodeModel.class);
+                        BarcodeModel model =
+                                gson.fromJson(responseData, BarcodeModel.class);
 
-                        ArrayList<TrackerResModel> list = model.getBarcode_data();
+                        if(model == null){
+
+                            Toast.makeText(
+                                    SearchActivity.this,
+                                    "Invalid Response",
+                                    Toast.LENGTH_LONG
+                            ).show();
+
+                            return;
+                        }
+
+                        ArrayList<TrackerResModel> list =
+                                model.getBarcode_data();
+
+                        if(list == null || list.isEmpty()){
+
+                            Toast.makeText(
+                                    SearchActivity.this,
+                                    "No Data Found",
+                                    Toast.LENGTH_LONG
+                            ).show();
+
+                            return;
+                        }
 
                         openDetailsScreen(list);
-
                     } else {
-                        Toast.makeText(SearchActivity.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
-                    }
+                        Toast.makeText(
+                                SearchActivity.this,
+                                responseData.toString(),Toast.LENGTH_SHORT).show();                    }
                 });
             }
         });
@@ -129,7 +204,9 @@ public class SearchActivity extends AppCompatActivity {
     private void openDetailsScreen(ArrayList<TrackerResModel> list) {
         Intent intent = new Intent(SearchActivity.this, DetailsActivity.class);
         intent.putExtra("data", list);
+        intent.putExtra("source", "scanner");
         startActivity(intent);
+        finish();
     }
 
 }

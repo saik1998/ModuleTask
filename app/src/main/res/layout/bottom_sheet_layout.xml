@@ -10,8 +10,8 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please select one"
-        android:textSize="18sp"
+        android:text="Choose an option"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -19,51 +19,57 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:weightSum="1">
+        android:weightSum="5">
 
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewOne"
-                android:layout_width="150dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:layout_weight="0.5"
+                android:layout_width="100dp"
+                android:layout_height="130dp"
+                android:layout_margin="10dp"
                 android:backgroundTint="@android:color/white"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Camera Scan" />
-
                 <ImageView
                     android:id="@+id/btnScan"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/scan_icon"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="14dp"/>
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/img" />
+                    android:layout_marginTop="80dp"
+                    android:text="QR Scan"
+                    android:layout_gravity="center_horizontal"
+                    android:textStyle="bold"/>
 
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewTwo"
-                android:layout_width="150dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
+                android:layout_width="100dp"
+                android:layout_height="130dp"
+                android:layout_margin="11dp"
                 android:layout_weight="0.5"
                 android:backgroundTint="@android:color/white"
                 app:cardCornerRadius="12dp"
@@ -72,13 +78,18 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Search" />
+                    android:text="Search ID"
+                    android:layout_marginTop="80dp"
+                    android:gravity="center"
+                    android:textStyle="bold"/>
 
                 <ImageView
                     android:id="@+id/btnSearch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/img" />
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/search_icon"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="14dp"/>
 
             </androidx.cardview.widget.CardView>
 
